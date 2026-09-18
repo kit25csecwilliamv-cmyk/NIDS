@@ -1,801 +1,385 @@
-let monitoring = true;
-
 let packetCount = 0;
 let threatCount = 0;
 let connectionCount = 0;
-let speed = 0;
 
-let packetData = [];
+let monitoring = true;
 
-const protocols = [
-    "TCP",
-    "UDP",
-    "HTTP",
-    "HTTPS",
-    "DNS"
-];
+const packets = [];
+const alertHistory = [];
 
-const sourceIPs = [
-    "192.168.1.10",
-    "192.168.1.15",
-    "192.168.1.20",
-    "192.168.1.25",
-    "10.0.0.12",
-    "10.0.0.25",
-    "172.16.0.15"
-];
+const protocols = ["TCP", "UDP", "HTTP", "HTTPS", "DNS"];
 
-const destinationIPs = [
-    "192.168.1.1",
-    "8.8.8.8",
-    "1.1.1.1",
-    "10.0.0.1",
-    "172.16.0.1"
-];
 
-
-function randomItem(array) {
-
-    return array[
-        Math.floor(Math.random() * array.length)
-    ];
-
-}
-
-
-function randomPort() {
-
-    return Math.floor(
-        Math.random() * 60000
-    ) + 1000;
-
-}
-
-
-function randomSize() {
-
-    return Math.floor(
-        Math.random() * 1500
-    ) + 60;
-
-}
-
-
-function getTime() {
-
-    return new Date()
-        .toLocaleTimeString();
-
-}
-
-
-/* GENERATE PACKET */
-
-function generatePacket() {
-
-    if (!monitoring) {
-        return;
-    }
-
-
-    const protocol =
-        randomItem(protocols);
-
-    const source =
-        randomItem(sourceIPs);
-
-    const destination =
-        randomItem(destinationIPs);
-
-    const sourcePort =
-        randomPort();
-
-    const destinationPort =
-        randomPort();
-
-    const size =
-        randomSize();
-
-
-    let severity = "Normal";
-
-    let status = "Allowed";
-
-
-    /*
-       ADVANCED DETECTION RULES
-    */
-
-
-    // Large packet detection
-
-    if (size > 1400) {
-
-        severity = "Medium";
-
-        status = "Large Packet";
-
-    }
-
-
-    // Suspicious port detection
-
-    if (
-        destinationPort === 23 ||
-        destinationPort === 21 ||
-        destinationPort === 445
-    ) {
-
-        severity = "High";
-
-        status = "Suspicious Port";
-
-    }
-
-
-    // Random simulated intrusion
-
-    if (Math.random() < 0.06) {
-
-        severity = "Critical";
-
-        status = "Intrusion Detected";
-
-        threatCount++;
-
-        createAlert(
-            source,
-            severity,
-            status
-        );
-
-    }
-
-
-    packetCount++;
-
-    connectionCount +=
-        Math.floor(
-            Math.random() * 2
-        );
-
-
-    speed =
-        Math.floor(
-            Math.random() * 900
-        ) + 100;
-
-
-    const packet = {
-
-        time: getTime(),
-
-        source: source,
-
-        destination: destination,
-
-        protocol: protocol,
-
-        sourcePort: sourcePort,
-
-        destinationPort: destinationPort,
-
-        size: size,
-
-        severity: severity,
-
-        status: status
-
-    };
-
-
-    packetData.unshift(packet);
-
-
-    if (packetData.length > 100) {
-
-        packetData.pop();
-
-    }
-
-
-    updateDashboard();
-
-    displayPackets();
-
-    updateProtocolStats();
-
-}
-
-
-/* DASHBOARD */
+// ---------------- DASHBOARD ----------------
 
 function updateDashboard() {
 
-    document
-        .getElementById("packetCount")
-        .textContent =
-        packetCount.toLocaleString();
+    document.getElementById("packetCount").innerText = packetCount;
 
+    document.getElementById("threatCount").innerText = threatCount;
 
-    document
-        .getElementById("threatCount")
-        .textContent =
-        threatCount;
-
-
-    document
-        .getElementById("connectionCount")
-        .textContent =
+    document.getElementById("connectionCount").innerText =
         connectionCount;
-
-
-    document
-        .getElementById("speedCount")
-        .textContent =
-        speed + " KB/s";
-
-
-    document
-        .getElementById("alertBadge")
-        .textContent =
-        threatCount;
 
 }
 
 
-/* DISPLAY PACKETS */
+// ---------------- PACKET GENERATION ----------------
+
+function generatePacket() {
+
+    if (!monitoring)
+        return;
+
+    packetCount++;
+    connectionCount++;
+
+    const sourceIP =
+        "192.168.1." + Math.floor(Math.random() * 20 + 2);
+
+    const destinationIP =
+        "192.168.1." + Math.floor(Math.random() * 20 + 30);
+
+    const protocol =
+        protocols[Math.floor(Math.random() * protocols.length)];
+
+    const port =
+        Math.floor(Math.random() * 9000 + 1000);
+
+    const size =
+        Math.floor(Math.random() * 1400 + 100);
+
+    const time =
+        new Date().toLocaleTimeString();
+
+    packets.unshift({
+        time,
+        sourceIP,
+        destinationIP,
+        protocol,
+        port,
+        size
+    });
+
+    if (packets.length > 30)
+        packets.pop();
+
+    displayPackets();
+
+    updateDashboard();
+}
+
+
+// ---------------- PHONE CONNECTION DEMO ----------------
+
+function simulateDevice() {
+
+    const deviceIP = "192.168.1.15";
+
+    document.getElementById("deviceMessage").innerHTML =
+        "📱 <b>New Device Connected</b><br>" +
+        "Device: Mobile Phone<br>" +
+        "IP Address: " + deviceIP +
+        "<br>Status: Normal";
+
+    addPacket(
+        deviceIP,
+        "192.168.1.1",
+        "Wi-Fi",
+        "Connected",
+        "Normal"
+    );
+}
+
+
+// ---------------- CHROME DEMO ----------------
+
+function simulateChrome() {
+
+    const phoneIP = "192.168.1.15";
+
+    document.getElementById("deviceMessage").innerHTML =
+        "🌐 <b>Web Traffic Detected</b><br>" +
+        "Source: " + phoneIP +
+        "<br>Application: Chrome<br>" +
+        "Protocol: HTTPS<br>" +
+        "Status: Normal";
+
+    addPacket(
+        phoneIP,
+        "142.250.195.14",
+        "HTTPS",
+        "443",
+        "Normal"
+    );
+}
+
+
+// ---------------- ADD PACKET ----------------
+
+function addPacket(source, destination, protocol, port, status) {
+
+    packetCount++;
+    connectionCount++;
+
+    packets.unshift({
+        time: new Date().toLocaleTimeString(),
+        sourceIP: source,
+        destinationIP: destination,
+        protocol: protocol,
+        port: port,
+        size: Math.floor(Math.random() * 1000 + 200)
+    });
+
+    displayPackets();
+    updateDashboard();
+}
+
+
+// ---------------- TEST ALERT ----------------
+
+function generateTestAlert() {
+
+    threatCount++;
+
+    const sourceIP = "192.168.1.15";
+
+    const alert = {
+        type: "Possible Port Scan",
+        source: sourceIP,
+        severity: "HIGH",
+        time: new Date().toLocaleTimeString()
+    };
+
+    alertHistory.unshift(alert);
+
+    showAlert(alert);
+
+    updateDashboard();
+}
+
+
+// ---------------- SHOW ALERT ----------------
+
+function showAlert(alert) {
+
+    const alerts = document.getElementById("alerts");
+
+    const div = document.createElement("div");
+
+    div.className = "alert high";
+
+    div.innerHTML =
+        "🚨 <b>SECURITY ALERT</b><br><br>" +
+        "Type: " + alert.type + "<br>" +
+        "Source IP: " + alert.source + "<br>" +
+        "Severity: <b>" + alert.severity + "</b><br>" +
+        "Time: " + alert.time;
+
+    alerts.prepend(div);
+
+    displayAlertHistory();
+}
+
+
+// ---------------- ALERT HISTORY ----------------
+
+function displayAlertHistory() {
+
+    const history =
+        document.getElementById("alertHistory");
+
+    history.innerHTML = "";
+
+    alertHistory.forEach(alert => {
+
+        history.innerHTML += `
+            <div class="alert high">
+                🚨 <b>${alert.type}</b><br>
+                Source IP: ${alert.source}<br>
+                Severity: ${alert.severity}<br>
+                Time: ${alert.time}
+            </div>
+        `;
+    });
+}
+
+
+// ---------------- PACKET TABLE ----------------
 
 function displayPackets() {
 
     const table =
-        document.getElementById(
-            "packetTable"
-        );
-
+        document.getElementById("packetTable");
 
     table.innerHTML = "";
 
+    packets.forEach(packet => {
 
-    packetData.forEach(packet => {
-
-        const row =
-            document.createElement("tr");
-
-
-        row.innerHTML = `
-
-            <td>${packet.time}</td>
-
-            <td>${packet.source}</td>
-
-            <td>${packet.destination}</td>
-
-            <td>${packet.protocol}</td>
-
-            <td>${packet.sourcePort}</td>
-
-            <td>${packet.destinationPort}</td>
-
-            <td>${packet.size} bytes</td>
-
-            <td>
-                <span class="severity ${packet.severity.toLowerCase()}">
-                    ${packet.severity}
-                </span>
-            </td>
-
-            <td class="${packet.severity.toLowerCase()}">
-                ${packet.status}
-            </td>
-
+        table.innerHTML += `
+            <tr>
+                <td>${packet.time}</td>
+                <td>${packet.sourceIP}</td>
+                <td>${packet.destinationIP}</td>
+                <td>${packet.protocol}</td>
+                <td>${packet.port}</td>
+                <td>${packet.size} bytes</td>
+            </tr>
         `;
-
-
-        table.appendChild(row);
-
     });
-
 }
 
 
-/* ALERT SYSTEM */
-
-function createAlert(
-    ip,
-    severity,
-    message
-) {
-
-    const container =
-        document.getElementById(
-            "alertContainer"
-        );
-
-
-    const alert =
-        document.createElement("div");
-
-
-    alert.className =
-        "alert " +
-        severity.toLowerCase();
-
-
-    alert.innerHTML = `
-
-        <strong>
-            🚨 ${message}
-        </strong>
-
-        <small>
-            Source: ${ip}
-        </small>
-
-        <small>
-            ${getTime()}
-        </small>
-
-    `;
-
-
-    container.prepend(alert);
-
-
-    if (container.children.length > 7) {
-
-        container.removeChild(
-            container.lastChild
-        );
-
-    }
-
-}
-
-
-/* FILTER */
+// ---------------- SEARCH ----------------
 
 function filterPackets() {
 
     const search =
-        document
-            .getElementById(
-                "searchInput"
-            )
-            .value
-            .toLowerCase();
-
-
-    const protocol =
-        document
-            .getElementById(
-                "protocolFilter"
-            )
-            .value;
-
-
-    const severity =
-        document
-            .getElementById(
-                "severityFilter"
-            )
-            .value;
-
+        document.getElementById("search")
+        .value
+        .toLowerCase();
 
     const rows =
-        document.querySelectorAll(
-            "#packetTable tr"
-        );
-
+        document.querySelectorAll("#packetTable tr");
 
     rows.forEach(row => {
 
-        const text =
-            row.textContent.toLowerCase();
-
-
-        const protocolMatch =
-            protocol === "all" ||
-            text.includes(
-                protocol.toLowerCase()
-            );
-
-
-        const severityMatch =
-            severity === "all" ||
-            text.includes(
-                severity.toLowerCase()
-            );
-
-
-        const searchMatch =
-            text.includes(search);
-
-
-        if (
-            protocolMatch &&
-            severityMatch &&
-            searchMatch
-        ) {
-
-            row.style.display = "";
-
-        } else {
-
-            row.style.display = "none";
-
-        }
-
+        row.style.display =
+            row.innerText.toLowerCase()
+            .includes(search)
+            ? ""
+            : "none";
     });
-
 }
 
 
-/* CLEAR PACKETS */
-
-function clearPackets() {
-
-    packetData = [];
-
-    document
-        .getElementById(
-            "packetTable"
-        )
-        .innerHTML = "";
-
-}
-
-
-/* MONITORING */
+// ---------------- MONITORING ----------------
 
 function toggleMonitoring() {
 
-    monitoring =
-        !monitoring;
-
+    monitoring = !monitoring;
 
     const button =
-        document.getElementById(
-            "monitorButton"
-        );
+        document.getElementById("monitorBtn");
 
+    const status =
+        document.getElementById("statusText");
+
+    const dot =
+        document.getElementById("statusDot");
 
     if (monitoring) {
 
-        button.textContent =
-            "⏸ Monitoring";
+        button.innerText = "Stop Monitoring";
 
-        button.style.background =
-            "#22c55e";
+        status.innerText = "Monitoring";
+
+        dot.style.color = "#00ff88";
+
+        document.getElementById("networkStatus")
+            .innerText = "ONLINE";
 
     } else {
 
-        button.textContent =
-            "▶ Start Monitoring";
+        button.innerText = "Start Monitoring";
 
-        button.style.background =
-            "#f59e0b";
+        status.innerText = "Stopped";
 
+        dot.style.color = "red";
+
+        document.getElementById("networkStatus")
+            .innerText = "OFFLINE";
     }
-
 }
 
 
-/* TIME */
+// ---------------- PAGE NAVIGATION ----------------
 
-function updateTime() {
+function showPage(page) {
 
-    document
-        .getElementById(
-            "liveTime"
-        )
-        .textContent =
-        new Date().toLocaleTimeString();
+    document.getElementById("dashboard")
+        .style.display = "none";
 
-}
+    document.getElementById("packets")
+        .style.display = "none";
 
-setInterval(
-    updateTime,
-    1000
-);
+    document.getElementById("alertsPage")
+        .style.display = "none";
 
+    document.getElementById("network")
+        .style.display = "none";
 
-/* PROTOCOL ANALYTICS */
+    if (page === "dashboard")
+        document.getElementById("dashboard")
+            .style.display = "block";
 
-function updateProtocolStats() {
+    if (page === "packets")
+        document.getElementById("packets")
+            .style.display = "block";
 
-    const total =
-        packetData.length || 1;
+    if (page === "alerts")
+        document.getElementById("alertsPage")
+            .style.display = "block";
 
-
-    const counts = {
-
-        TCP: 0,
-        UDP: 0,
-        HTTP: 0,
-        HTTPS: 0,
-        DNS: 0
-
-    };
-
-
-    packetData.forEach(packet => {
-
-        if (counts[packet.protocol] !== undefined) {
-
-            counts[packet.protocol]++;
-
-        }
-
-    });
-
-
-    Object.keys(counts).forEach(protocol => {
-
-        const percent =
-            Math.round(
-                (counts[protocol] / total) * 100
-            );
-
-
-        const bar =
-            document.getElementById(
-                protocol.toLowerCase() +
-                "Bar"
-            );
-
-
-        const value =
-            document.getElementById(
-                protocol.toLowerCase() +
-                "Value"
-            );
-
-
-        if (bar) {
-
-            bar.style.width =
-                percent + "%";
-
-        }
-
-
-        if (value) {
-
-            value.textContent =
-                percent + "%";
-
-        }
-
-    });
-
+    if (page === "network")
+        document.getElementById("network")
+            .style.display = "block";
 }
 
 
-/* CSV EXPORT */
-
-function exportCSV() {
-
-    if (packetData.length === 0) {
-
-        alert(
-            "No packet data available."
-        );
-
-        return;
-
-    }
-
-
-    let csv =
-        "Time,Source IP,Destination IP,Protocol,Source Port,Destination Port,Size,Severity,Status\n";
-
-
-    packetData.forEach(packet => {
-
-        csv +=
-            `${packet.time},` +
-            `${packet.source},` +
-            `${packet.destination},` +
-            `${packet.protocol},` +
-            `${packet.sourcePort},` +
-            `${packet.destinationPort},` +
-            `${packet.size},` +
-            `${packet.severity},` +
-            `${packet.status}\n`;
-
-    });
-
-
-    const blob =
-        new Blob(
-            [csv],
-            {
-                type:
-                    "text/csv"
-            }
-        );
-
-
-    const url =
-        URL.createObjectURL(
-            blob
-        );
-
-
-    const link =
-        document.createElement(
-            "a"
-        );
-
-
-    link.href = url;
-
-    link.download =
-        "NIDS_Packet_Report.csv";
-
-
-    link.click();
-
-
-    URL.revokeObjectURL(
-        url
-    );
-
-}
-
-
-/* CHART */
+// ---------------- CHART ----------------
 
 const ctx =
-    document
-        .getElementById(
-            "trafficChart"
-        )
-        .getContext("2d");
+    document.getElementById("trafficChart");
 
+const trafficChart = new Chart(ctx, {
 
-const trafficData = {
+    type: "line",
 
-    labels: [],
+    data: {
 
-    datasets: [
+        labels: [],
 
-        {
-
-            label:
-                "Packets / Second",
-
+        datasets: [{
+            label: "Packets / Second",
             data: [],
+            tension: 0.3
+        }]
+    },
 
-            borderWidth: 2,
-
-            tension: 0.4,
-
-            fill: true
-
-        }
-
-    ]
-
-};
-
-
-const trafficChart =
-    new Chart(
-        ctx,
-        {
-
-            type: "line",
-
-            data: trafficData,
-
-            options: {
-
-                responsive: true,
-
-                maintainAspectRatio: false,
-
-                plugins: {
-
-                    legend: {
-                        display: false
-                    }
-
-                },
-
-                scales: {
-
-                    x: {
-                        display: false
-                    },
-
-                    y: {
-
-                        beginAtZero: true,
-
-                        grid: {
-                            color:
-                                "#1e293b"
-                        },
-
-                        ticks: {
-                            color:
-                                "#64748b"
-                        }
-
-                    }
-
-                }
-
-            }
-
-        }
-    );
+    options: {
+        responsive: true
+    }
+});
 
 
 function updateChart() {
 
-    const now =
-        new Date()
-            .toLocaleTimeString();
-
-
-    trafficData.labels.push(
-        now
+    trafficChart.data.labels.push(
+        new Date().toLocaleTimeString()
     );
 
+    trafficChart.data.datasets[0].data.push(
+        Math.floor(Math.random() * 100)
+    );
 
-    trafficData.datasets[0]
-        .data.push(
-            Math.floor(
-                Math.random() * 1000
-            )
-        );
+    if (trafficChart.data.labels.length > 15) {
 
+        trafficChart.data.labels.shift();
 
-    if (
-        trafficData.labels.length >
-        20
-    ) {
-
-        trafficData.labels.shift();
-
-        trafficData.datasets[0]
-            .data.shift();
-
+        trafficChart.data.datasets[0].data.shift();
     }
 
-
     trafficChart.update();
-
 }
 
 
-/* START SIMULATION */
+// Run every second
 
-setInterval(
-    generatePacket,
-    1000
-);
-
-
-setInterval(
-    updateChart,
-    1000
-);
-
-
-/* INITIAL DATA */
-
-for (
-    let i = 0;
-    i < 10;
-    i++
-) {
+setInterval(function () {
 
     generatePacket();
 
-}
+    updateChart();
 
-updateChart();
+}, 1000);
