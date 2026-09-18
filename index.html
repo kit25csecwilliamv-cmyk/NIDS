@@ -3,198 +3,725 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NIDS - Network Intrusion Detection System</title>
+
+    <title>NIDS | Advanced Network Security</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <header class="header">
-        <div>
-            <h1>🛡 NIDS</h1>
-            <p>Network Intrusion Detection System</p>
+<div class="app">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="logo">
+            <div class="logo-icon">🛡</div>
+
+            <div>
+                <h2>NIDS</h2>
+                <span>Security Center</span>
+            </div>
         </div>
 
-        <div class="status">
-            <span class="status-dot"></span>
-            System Online
+        <nav>
+
+            <a href="#dashboard" class="active">
+                <span>📊</span>
+                Dashboard
+            </a>
+
+            <a href="#packets">
+                <span>📦</span>
+                Packets
+            </a>
+
+            <a href="#alerts">
+                <span>🚨</span>
+                Alerts
+            </a>
+
+            <a href="#analytics">
+                <span>📈</span>
+                Analytics
+            </a>
+
+            <a href="#rules">
+                <span>🧠</span>
+                Detection Rules
+            </a>
+
+            <a href="#network">
+                <span>🌐</span>
+                Network
+            </a>
+
+            <a href="#settings">
+                <span>⚙️</span>
+                Settings
+            </a>
+
+        </nav>
+
+        <div class="sidebar-bottom">
+
+            <div class="system-status">
+                <span class="pulse"></span>
+
+                <div>
+                    <strong>System Online</strong>
+                    <small>NIDS Engine Active</small>
+                </div>
+            </div>
+
         </div>
-    </header>
 
-    <nav class="navbar">
-        <a href="#dashboard">Dashboard</a>
-        <a href="#packets">Packets</a>
-        <a href="#alerts">Alerts</a>
-        <a href="#monitoring">Monitoring</a>
-    </nav>
+    </aside>
 
-    <main id="dashboard">
 
-        <section class="cards">
+    <!-- MAIN -->
+    <main class="main">
 
-            <div class="card">
-                <div class="card-icon">📦</div>
-                <div>
-                    <h3>Total Packets</h3>
-                    <p id="packetCount">0</p>
-                </div>
+        <!-- TOP BAR -->
+        <header class="topbar">
+
+            <div>
+                <h1>Network Security Dashboard</h1>
+
+                <p>
+                    Real-time Network Intrusion Detection & Monitoring
+                </p>
             </div>
 
-            <div class="card">
-                <div class="card-icon alert-icon">⚠️</div>
-                <div>
-                    <h3>Intrusion Alerts</h3>
-                    <p id="alertCount">0</p>
+            <div class="top-actions">
+
+                <div class="live-time" id="liveTime">
+                    00:00:00
                 </div>
+
+                <button
+                    class="monitor-btn"
+                    id="monitorButton"
+                    onclick="toggleMonitoring()">
+
+                    ⏸ Monitoring
+
+                </button>
+
             </div>
 
-            <div class="card">
-                <div class="card-icon">🔗</div>
-                <div>
-                    <h3>Connections</h3>
-                    <p id="connectionCount">0</p>
+        </header>
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard">
+
+
+            <!-- STAT CARDS -->
+            <div class="stats-grid">
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <span>Total Packets</span>
+                        <div class="stat-icon blue">📦</div>
+                    </div>
+
+                    <h2 id="packetCount">0</h2>
+
+                    <p class="positive">
+                        ↑ Live traffic
+                    </p>
+
                 </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <span>Threats Detected</span>
+                        <div class="stat-icon red">🚨</div>
+                    </div>
+
+                    <h2 id="threatCount">0</h2>
+
+                    <p class="negative">
+                        Security events
+                    </p>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <span>Active Connections</span>
+                        <div class="stat-icon purple">🔗</div>
+                    </div>
+
+                    <h2 id="connectionCount">0</h2>
+
+                    <p class="positive">
+                        ↑ Network activity
+                    </p>
+
+                </div>
+
+
+                <div class="stat-card">
+
+                    <div class="stat-top">
+                        <span>Network Speed</span>
+                        <div class="stat-icon green">⚡</div>
+                    </div>
+
+                    <h2 id="speedCount">0 KB/s</h2>
+
+                    <p class="positive">
+                        Real-time
+                    </p>
+
+                </div>
+
             </div>
 
-            <div class="card">
-                <div class="card-icon">📡</div>
-                <div>
-                    <h3>Traffic</h3>
-                    <p id="trafficCount">0 KB/s</p>
+
+            <!-- CHART + ALERTS -->
+            <div class="dashboard-grid">
+
+
+                <!-- TRAFFIC -->
+                <div class="panel large-panel">
+
+                    <div class="panel-title">
+
+                        <div>
+                            <h2>Network Traffic</h2>
+
+                            <p>
+                                Packets received per second
+                            </p>
+                        </div>
+
+                        <span class="live-badge">
+                            ● LIVE
+                        </span>
+
+                    </div>
+
+                    <div class="chart-wrapper">
+
+                        <canvas id="trafficChart"></canvas>
+
+                    </div>
+
                 </div>
+
+
+                <!-- SECURITY ALERTS -->
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <div>
+                            <h2>Security Alerts</h2>
+
+                            <p>Latest detected events</p>
+
+                        </div>
+
+                        <span id="alertBadge" class="alert-badge">
+                            0
+                        </span>
+
+                    </div>
+
+                    <div id="alertContainer" class="alert-container">
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PROTOCOL ANALYTICS -->
+            <div class="analytics-grid">
+
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <div>
+                            <h2>Protocol Distribution</h2>
+                            <p>Network protocol activity</p>
+                        </div>
+
+                    </div>
+
+                    <div class="protocol-list">
+
+                        <div class="protocol">
+                            <span>TCP</span>
+
+                            <div class="progress">
+                                <div
+                                    class="progress-bar"
+                                    id="tcpBar"
+                                    style="width:70%">
+                                </div>
+                            </div>
+
+                            <strong id="tcpValue">70%</strong>
+                        </div>
+
+
+                        <div class="protocol">
+                            <span>UDP</span>
+
+                            <div class="progress">
+                                <div
+                                    class="progress-bar"
+                                    id="udpBar"
+                                    style="width:45%">
+                                </div>
+                            </div>
+
+                            <strong id="udpValue">45%</strong>
+                        </div>
+
+
+                        <div class="protocol">
+                            <span>HTTP</span>
+
+                            <div class="progress">
+                                <div
+                                    class="progress-bar"
+                                    id="httpBar"
+                                    style="width:30%">
+                                </div>
+                            </div>
+
+                            <strong id="httpValue">30%</strong>
+                        </div>
+
+
+                        <div class="protocol">
+                            <span>HTTPS</span>
+
+                            <div class="progress">
+                                <div
+                                    class="progress-bar"
+                                    id="httpsBar"
+                                    style="width:80%">
+                                </div>
+                            </div>
+
+                            <strong id="httpsValue">80%</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SYSTEM INFORMATION -->
+                <div class="panel">
+
+                    <div class="panel-title">
+
+                        <div>
+                            <h2>System Information</h2>
+                            <p>NIDS engine status</p>
+                        </div>
+
+                    </div>
+
+                    <div class="system-info">
+
+                        <div>
+                            <span>Network Interface</span>
+                            <strong>
+                                Intel Wi-Fi 6 AX201
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Capture Engine</span>
+                            <strong>
+                                Pcap4J + Npcap
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Detection Engine</span>
+                            <strong>
+                                Java NIDS Engine
+                            </strong>
+                        </div>
+
+                        <div>
+                            <span>Operating System</span>
+                            <strong>
+                                Windows
+                            </strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
             </div>
 
         </section>
 
-        <section class="content-grid">
 
-            <div class="panel chart-panel">
-                <div class="panel-header">
-                    <h2>Network Traffic</h2>
-                    <span>Live</span>
+        <!-- PACKETS -->
+        <section id="packets" class="section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Live Packet Analysis</h2>
+
+                    <p>
+                        Monitor and analyze captured network packets
+                    </p>
                 </div>
 
-                <div class="chart">
-                    <div class="bar" style="height:35%"></div>
-                    <div class="bar" style="height:50%"></div>
-                    <div class="bar" style="height:42%"></div>
-                    <div class="bar" style="height:70%"></div>
-                    <div class="bar" style="height:55%"></div>
-                    <div class="bar" style="height:80%"></div>
-                    <div class="bar" style="height:62%"></div>
-                    <div class="bar" style="height:90%"></div>
-                    <div class="bar" style="height:65%"></div>
-                    <div class="bar" style="height:75%"></div>
-                    <div class="bar" style="height:48%"></div>
-                    <div class="bar" style="height:85%"></div>
-                </div>
-            </div>
+                <div class="table-actions">
 
-            <div class="panel" id="alerts">
+                    <button onclick="exportCSV()">
+                        💾 Export CSV
+                    </button>
 
-                <div class="panel-header">
-                    <h2>Recent Alerts</h2>
-                    <span class="danger">Security</span>
-                </div>
+                    <button onclick="clearPackets()">
+                        🗑 Clear
+                    </button>
 
-                <div id="alertList" class="alert-list">
-                    <div class="alert-item">
-                        <span>⚠️</span>
-                        <div>
-                            <strong>Port Scan Detected</strong>
-                            <small>192.168.1.15</small>
-                        </div>
-                    </div>
-
-                    <div class="alert-item">
-                        <span>🚨</span>
-                        <div>
-                            <strong>High Traffic Detected</strong>
-                            <small>10.0.0.25</small>
-                        </div>
-                    </div>
                 </div>
 
             </div>
 
-        </section>
 
-        <section class="panel" id="packets">
+            <div class="panel">
 
-            <div class="panel-header">
-                <h2>Live Packet Monitoring</h2>
+                <!-- FILTERS -->
+                <div class="filters">
 
-                <input
-                    type="text"
-                    id="searchInput"
-                    placeholder="Search IP / Protocol..."
-                >
-            </div>
+                    <input
+                        type="text"
+                        id="searchInput"
+                        placeholder="🔍 Search IP address..."
+                        onkeyup="filterPackets()">
 
-            <div class="table-container">
 
-                <table>
-                    <thead>
+                    <select
+                        id="protocolFilter"
+                        onchange="filterPackets()">
+
+                        <option value="all">
+                            All Protocols
+                        </option>
+
+                        <option value="TCP">
+                            TCP
+                        </option>
+
+                        <option value="UDP">
+                            UDP
+                        </option>
+
+                        <option value="HTTP">
+                            HTTP
+                        </option>
+
+                        <option value="HTTPS">
+                            HTTPS
+                        </option>
+
+                        <option value="DNS">
+                            DNS
+                        </option>
+
+                    </select>
+
+
+                    <select
+                        id="severityFilter"
+                        onchange="filterPackets()">
+
+                        <option value="all">
+                            All Severity
+                        </option>
+
+                        <option value="Normal">
+                            Normal
+                        </option>
+
+                        <option value="Low">
+                            Low
+                        </option>
+
+                        <option value="Medium">
+                            Medium
+                        </option>
+
+                        <option value="High">
+                            High
+                        </option>
+
+                        <option value="Critical">
+                            Critical
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
                         <tr>
+
                             <th>Time</th>
+
                             <th>Source IP</th>
+
                             <th>Destination IP</th>
+
                             <th>Protocol</th>
+
                             <th>Source Port</th>
+
                             <th>Destination Port</th>
-                            <th>Size</th>
+
+                            <th>Packet Size</th>
+
+                            <th>Severity</th>
+
                             <th>Status</th>
+
                         </tr>
-                    </thead>
 
-                    <tbody id="packetTable">
+                        </thead>
 
-                    </tbody>
-                </table>
+                        <tbody id="packetTable">
 
-            </div>
+                        </tbody>
 
-        </section>
+                    </table>
 
-        <section class="panel monitoring" id="monitoring">
-
-            <div class="panel-header">
-                <h2>Network Monitoring</h2>
-            </div>
-
-            <div class="monitor-info">
-
-                <div>
-                    <label>Network Interface</label>
-                    <p>Intel(R) Wi-Fi 6 AX201 160MHz</p>
-                </div>
-
-                <div>
-                    <label>Capture Status</label>
-                    <p class="online">● Capturing Packets</p>
-                </div>
-
-                <div>
-                    <label>Detection Engine</label>
-                    <p>Java NIDS Engine</p>
-                </div>
-
-                <div>
-                    <label>Packet Capture</label>
-                    <p>Pcap4J + Npcap</p>
                 </div>
 
             </div>
 
         </section>
+
+
+        <!-- DETECTION RULES -->
+        <section id="rules" class="section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Intrusion Detection Rules</h2>
+
+                    <p>
+                        Active rules used by the NIDS detection engine
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="rules-grid">
+
+                <div class="rule-card">
+
+                    <div class="rule-header">
+                        <span class="rule-icon">🔎</span>
+                        <span class="enabled">ACTIVE</span>
+                    </div>
+
+                    <h3>Port Scan Detection</h3>
+
+                    <p>
+                        Detects a source IP connecting to multiple
+                        destination ports within a short time.
+                    </p>
+
+                    <div class="rule-footer">
+                        Threshold: 10 ports / 10 sec
+                    </div>
+
+                </div>
+
+
+                <div class="rule-card">
+
+                    <div class="rule-header">
+                        <span class="rule-icon">📈</span>
+                        <span class="enabled">ACTIVE</span>
+                    </div>
+
+                    <h3>High Traffic Detection</h3>
+
+                    <p>
+                        Identifies unusually high packet or traffic
+                        volume from a network source.
+                    </p>
+
+                    <div class="rule-footer">
+                        Threshold: 1000 packets/sec
+                    </div>
+
+                </div>
+
+
+                <div class="rule-card">
+
+                    <div class="rule-header">
+                        <span class="rule-icon">🔗</span>
+                        <span class="enabled">ACTIVE</span>
+                    </div>
+
+                    <h3>Repeated Connection</h3>
+
+                    <p>
+                        Detects repeated connections to the same
+                        destination within a short interval.
+                    </p>
+
+                    <div class="rule-footer">
+                        Threshold: 50 connections
+                    </div>
+
+                </div>
+
+
+                <div class="rule-card">
+
+                    <div class="rule-header">
+                        <span class="rule-icon">📦</span>
+                        <span class="enabled">ACTIVE</span>
+                    </div>
+
+                    <h3>Large Packet Detection</h3>
+
+                    <p>
+                        Detects unusually large packets that may
+                        indicate abnormal network behavior.
+                    </p>
+
+                    <div class="rule-footer">
+                        Threshold: 1400 bytes
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- NETWORK -->
+        <section id="network" class="section">
+
+            <div class="section-heading">
+
+                <div>
+                    <h2>Network Monitoring</h2>
+
+                    <p>
+                        Current network environment
+                    </p>
+                </div>
+
+            </div>
+
+
+            <div class="network-grid">
+
+                <div class="network-card">
+
+                    <span>🌐</span>
+
+                    <div>
+                        <small>Local IP</small>
+                        <strong>192.168.1.20</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="network-card">
+
+                    <span>📡</span>
+
+                    <div>
+                        <small>Interface</small>
+                        <strong>Wi-Fi</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="network-card">
+
+                    <span>🖥</span>
+
+                    <div>
+                        <small>Gateway</small>
+                        <strong>192.168.1.1</strong>
+                    </div>
+
+                </div>
+
+
+                <div class="network-card">
+
+                    <span>🔒</span>
+
+                    <div>
+                        <small>Security Mode</small>
+                        <strong>Active</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- FOOTER -->
+
+        <footer>
+
+            <p>
+                🛡 NIDS — Network Intrusion Detection System
+            </p>
+
+            <span>
+                Java • Pcap4J • Npcap • HTML • CSS • JavaScript
+            </span>
+
+        </footer>
 
     </main>
 
-    <footer>
-        <p>© 2026 Network Intrusion Detection System | Java + Pcap4J + Npcap</p>
-    </footer>
+</div>
 
-    <script src="script.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="script.js"></script>
 
 </body>
 </html>
