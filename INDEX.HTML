@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NIDS - Network Intrusion Detection System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
 
+<body>
+
+    <header class="header">
+        <div>
+            <h1>🛡 NIDS</h1>
+            <p>Network Intrusion Detection System</p>
+        </div>
+
+        <div class="status">
+            <span class="status-dot"></span>
+            System Online
+        </div>
+    </header>
+
+    <nav class="navbar">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#packets">Packets</a>
+        <a href="#alerts">Alerts</a>
+        <a href="#monitoring">Monitoring</a>
+    </nav>
+
+    <main id="dashboard">
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-icon">📦</div>
+                <div>
+                    <h3>Total Packets</h3>
+                    <p id="packetCount">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon alert-icon">⚠️</div>
+                <div>
+                    <h3>Intrusion Alerts</h3>
+                    <p id="alertCount">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">🔗</div>
+                <div>
+                    <h3>Connections</h3>
+                    <p id="connectionCount">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon">📡</div>
+                <div>
+                    <h3>Traffic</h3>
+                    <p id="trafficCount">0 KB/s</p>
+                </div>
+            </div>
+
+        </section>
+
+        <section class="content-grid">
+
+            <div class="panel chart-panel">
+                <div class="panel-header">
+                    <h2>Network Traffic</h2>
+                    <span>Live</span>
+                </div>
+
+                <div class="chart">
+                    <div class="bar" style="height:35%"></div>
+                    <div class="bar" style="height:50%"></div>
+                    <div class="bar" style="height:42%"></div>
+                    <div class="bar" style="height:70%"></div>
+                    <div class="bar" style="height:55%"></div>
+                    <div class="bar" style="height:80%"></div>
+                    <div class="bar" style="height:62%"></div>
+                    <div class="bar" style="height:90%"></div>
+                    <div class="bar" style="height:65%"></div>
+                    <div class="bar" style="height:75%"></div>
+                    <div class="bar" style="height:48%"></div>
+                    <div class="bar" style="height:85%"></div>
+                </div>
+            </div>
+
+            <div class="panel" id="alerts">
+
+                <div class="panel-header">
+                    <h2>Recent Alerts</h2>
+                    <span class="danger">Security</span>
+                </div>
+
+                <div id="alertList" class="alert-list">
+                    <div class="alert-item">
+                        <span>⚠️</span>
+                        <div>
+                            <strong>Port Scan Detected</strong>
+                            <small>192.168.1.15</small>
+                        </div>
+                    </div>
+
+                    <div class="alert-item">
+                        <span>🚨</span>
+                        <div>
+                            <strong>High Traffic Detected</strong>
+                            <small>10.0.0.25</small>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+        <section class="panel" id="packets">
+
+            <div class="panel-header">
+                <h2>Live Packet Monitoring</h2>
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search IP / Protocol..."
+                >
+            </div>
+
+            <div class="table-container">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Source IP</th>
+                            <th>Destination IP</th>
+                            <th>Protocol</th>
+                            <th>Source Port</th>
+                            <th>Destination Port</th>
+                            <th>Size</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="packetTable">
+
+                    </tbody>
+                </table>
+
+            </div>
+
+        </section>
+
+        <section class="panel monitoring" id="monitoring">
+
+            <div class="panel-header">
+                <h2>Network Monitoring</h2>
+            </div>
+
+            <div class="monitor-info">
+
+                <div>
+                    <label>Network Interface</label>
+                    <p>Intel(R) Wi-Fi 6 AX201 160MHz</p>
+                </div>
+
+                <div>
+                    <label>Capture Status</label>
+                    <p class="online">● Capturing Packets</p>
+                </div>
+
+                <div>
+                    <label>Detection Engine</label>
+                    <p>Java NIDS Engine</p>
+                </div>
+
+                <div>
+                    <label>Packet Capture</label>
+                    <p>Pcap4J + Npcap</p>
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <p>© 2026 Network Intrusion Detection System | Java + Pcap4J + Npcap</p>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
